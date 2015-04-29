@@ -1,0 +1,21 @@
+{
+	"pluginId": "vs.language.puppet",
+	"activationEvents": ["textModel:puppet"],
+	"mainModule": "./puppetMain",
+	"contributes": {
+		"language": [{
+			"id": "puppet",
+			"extensions": [ ".pp"],
+			"filenames": [ ],
+			"aliases": [ "Puppet", "pp" ]
+		}]
+	},
+	"scripts": {
+		"compile": "node ../../node_modules/gulp/bin/gulp.js --gulpfile ../gulpfile.js compile --dir vs.language.puppet"
+	},
+	"_testing": "./tests/puppetTests",
+	"_bundling": [
+		{ "name": "./puppetMain" },
+		{ "name": "./puppetWorker" }
+	]
+}
