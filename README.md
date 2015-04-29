@@ -4,7 +4,13 @@ To play with this, create a symlink from `vs.language.puppet` to something like 
 
 ```sh
 mklink /d vs.language.puppet C:\code\visualstudiocode-puppet-language\vs.language.puppet
-```
+
+``` 
+On OSX, crack open the `Visual Studio Code.app` folder (right click, show package contents) and navigate to `Contents/Resources/app/plugins` and copy the `vs.language.puppet` folder in (you can try symlinking it if you want).
+
+Changing the language in code is as simple as `Ctrl+P` (`Cmd+P`), start typing `Change Language Mode`, hit enter, start typing `Puppet`, hit enter.
+
+![Puppet Code](http://i.imgur.com/rtuBL1B.png)
 
 ### NOTES
 
