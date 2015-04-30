@@ -263,8 +263,8 @@ define(["require", "exports"], function (require, exports) {
             // dstring.<kind>.<delim> where kind is 'd' (double quoted), 'x' (command), or 's' (symbol)
             // and delim is the ending delimiter (" or `)
             dstring: [
-                [/[^\\`"#]+/, 'string.$S2'],
-                [/#/, 'string.$S2.escape', '@interpolated'],
+                [/[^\\`"\$]+/, 'string.$S2'],
+                [/\$/, 'string.$S2.escape', '@interpolated'],
                 [/\\$/, 'string.$S2.escape'],
                 [/@escapes/, 'string.$S2.escape'],
                 [/\\./, 'string.$S2.escape.invalid'],
