@@ -71,12 +71,12 @@ define(["require", "exports"], function (require, exports) {
             'case',
             'class',
             'def',
+            'define',
             'defined?',
             'do',
             'else',
             'elsif',
             'end',
-            'ensure',
             'for',
             'false',
             'if',
@@ -213,9 +213,7 @@ define(["require", "exports"], function (require, exports) {
                 [/^(\s*)([a-z_]\w*[!?=]?)/, ['white', { cases: { 'for|until|while': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@declarations': { token: 'keyword.$2', bracket: '@open', next: '@root.$2' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }]],
                 [/[a-z_]\w*[!?=]?/, { cases: { 'if|unless|while|until': { token: 'keyword.$0x', bracket: '@open', next: '@modifier.$0x' }, 'for': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@linedecls': { token: 'keyword.$0', bracket: '@open', next: '@root.$0' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }],
                 [/[A-Z][\w]*[!?=]?/, 'constructor.identifier'],
-                [/\$[\w]*/, 'global.constant'],
-                [/@[\w]*/, 'namespace.instance.identifier'],
-                [/@@[\w]*/, 'namespace.class.identifier'],
+                [/\$\s*[a-zA-Z_\$][\w\$]*/, 'annotation'],
                 { include: '@whitespace' },
                 [/"/, { token: 'string.d.delim', bracket: '@open', next: '@dstring.d."' }],
                 [/'/, { token: 'string.sq.delim', bracket: '@open', next: '@sstring.sq' }],
@@ -264,7 +262,7 @@ define(["require", "exports"], function (require, exports) {
             // and delim is the ending delimiter (" or `)
             dstring: [
                 [/[^\\`"\$]+/, 'string.$S2'],
-                [/\$/, 'string.$S2.escape', '@interpolated'],
+                [/\$/, 'annotation', '@interpolated'],
                 [/\\$/, 'string.$S2.escape'],
                 [/@escapes/, 'string.$S2.escape'],
                 [/\\./, 'string.$S2.escape.invalid'],
@@ -277,16 +275,15 @@ define(["require", "exports"], function (require, exports) {
                 [/.*/, 'string.heredoc'],
             ],
             // interpolated sequence
-            interpolated: [
-                [/\$\w*/, 'global.constant', '@pop'],
-                [/@\w*/, 'namespace.class.identifier', '@pop'],
-                [/@@\w*/, 'namespace.instance.identifier', '@pop'],
-                [/[{]/, { token: 'string.escape.curly', bracket: '@open', switchTo: '@interpolated_compound' }],
+            interpolated: [            
+                [/[{]/, { token: 'annotation', bracket: '@open', switchTo: '@interpolated_compound' }],
+                [/\w*/, 'annotation', '@pop'],
                 ['', '', '@pop'],
             ],
             // any code 
             interpolated_compound: [
-                [/[}]/, { token: 'string.escape.curly', bracket: '@close', next: '@pop' }],
+                [/[}]/, { token: 'annotation', bracket: '@close', next: '@pop' }],
+                [/\w*/,'keyword'],
                 { include: '@root' },
             ],
             // %r quoted regexp
