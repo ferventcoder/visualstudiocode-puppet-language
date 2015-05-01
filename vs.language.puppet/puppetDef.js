@@ -213,8 +213,8 @@ define(["require", "exports"], function (require, exports) {
             root: [            
                 [/^(\s*)([a-z_]\w*[!?=]?)/, ['white', { cases: { 'for|until|while': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@declarations': { token: 'keyword.$2', bracket: '@open', next: '@root.$2' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }]],
                 [/[a-z_]\w*[!?=]?/, { cases: { 'if|unless|while|until': { token: 'keyword.$0x', bracket: '@open', next: '@modifier.$0x' }, 'for': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@linedecls': { token: 'keyword.$0', bracket: '@open', next: '@root.$0' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }],
-                [/[A-Z][\w]*[!?=]?/, 'constructor.identifier'],
-                [/\$[:a-zA-Z_]+[\w]*/, 'annotation'],
+                [/[A-Z][\w]*[!?=]?/, 'begin'],
+                [/\$[:a-zA-Z_]+[\w]*[^:\W]/, 'annotation'],
                 { include: '@whitespace' },
                 [/"/, { token: 'string.d.delim', bracket: '@open', next: '@dstring.d."' }],
                 [/'/, { token: 'string.sq.delim', bracket: '@open', next: '@sstring.sq' }],
@@ -285,7 +285,8 @@ define(["require", "exports"], function (require, exports) {
             // any code 
             interpolated_compound: [
                 [/[}]/, { token: 'annotation', bracket: '@close', next: '@pop' }],
-                [/\w*/,'keyword'],
+
+                [/\w*/,'annotation'],
                 { include: '@root' },
             ],
             // %r quoted regexp
@@ -377,6 +378,11 @@ define(["require", "exports"], function (require, exports) {
                 [/^\s*=end\b.*/, 'comment', '@pop'],
                 [/[=]/, 'comment']
             ],
+            functions: [
+                [/\(/, {token: 'function', bracket: '@close', next: '@pop' }],
+                { include: '@root' }
+            ],
+
         }
     };
 });
