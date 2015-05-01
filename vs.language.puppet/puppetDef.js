@@ -72,6 +72,7 @@ define(["require", "exports"], function (require, exports) {
             'class',
             'def',
             'define',
+            'defined',
             'defined?',
             'do',
             'else',
@@ -209,11 +210,11 @@ define(["require", "exports"], function (require, exports) {
         tokenizer: {
             // Main entry. 
             // root.<decl> where decl is the current opening declaration (like 'class')
-            root: [
+            root: [            
                 [/^(\s*)([a-z_]\w*[!?=]?)/, ['white', { cases: { 'for|until|while': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@declarations': { token: 'keyword.$2', bracket: '@open', next: '@root.$2' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }]],
                 [/[a-z_]\w*[!?=]?/, { cases: { 'if|unless|while|until': { token: 'keyword.$0x', bracket: '@open', next: '@modifier.$0x' }, 'for': { token: 'keyword.$2', bracket: '@open', next: '@dodecl.$2' }, '@linedecls': { token: 'keyword.$0', bracket: '@open', next: '@root.$0' }, 'end': { token: 'keyword.$S2', bracket: '@close', next: '@pop' }, '@keywords': 'keyword', '@builtins': 'predefined', '@default': 'identifier' } }],
                 [/[A-Z][\w]*[!?=]?/, 'constructor.identifier'],
-                [/\$\s*[a-zA-Z_\$][\w\$]*/, 'annotation'],
+                [/\$[:a-zA-Z_]+[\w]*/, 'annotation'],
                 { include: '@whitespace' },
                 [/"/, { token: 'string.d.delim', bracket: '@open', next: '@dstring.d."' }],
                 [/'/, { token: 'string.sq.delim', bracket: '@open', next: '@sstring.sq' }],
@@ -224,6 +225,7 @@ define(["require", "exports"], function (require, exports) {
                 [/:"/, { token: 'string.s.delim', bracket: '@open', next: '@dstring.s."' }],
                 [/:'/, { token: 'string.s.delim', bracket: '@open', next: '@sstring.s' }],
                 ['/', { token: 'regexp.delim', bracket: '@open', next: '@regexp' }],
+
                 [/[{}()\[\]]/, '@brackets'],
                 [/@symbols/, { cases: { '@keywordops': 'keyword', '@operators': 'operator', '@default': '' } }],
                 [/[;,]/, 'delimiter'],
